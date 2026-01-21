@@ -18,6 +18,7 @@ TARGET = $(OBJDIR)/tcp_echo_server
 # general syntax for definition - 
 # target: dependencies
 # <TAB>command
+# now make will run the entire file and stuff like make clean will only run the defined rule
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
