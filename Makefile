@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -std=c11 -Iinclude
 # define a dir for objs
 OBJDIR = bin
 # define which files be compiled
-SRC = src/tcp_echo_server.c src/utils.c
+SRC = src/tcp_echo_server.c src/signal.c src/SIGCHLD_handler.c
 # for each .c make a .o   
 OBJ = $(SRC:src/%.c=$(OBJDIR)/%.o)
 # set a final target main executable
@@ -35,6 +35,9 @@ all : $(TARGET)
 # define a clean rule
 clean : 
 	rm -rf $(OBJDIR)
+
+client :
+	g++ src/tcp_echo_client.c -o bin/tcp_echo_client
 
 # what is this ? 
 .PHONY: all clean

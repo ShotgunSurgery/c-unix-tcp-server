@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "../include/utils.h"
 #include <signal.h>
 
@@ -10,11 +11,11 @@ Sigfunc *Signal(int signal_no, Sigfunc *function_ptr) {
   new_signal_to_install.sa_flags = 0; // sa_flags is a bitmask feild, basically signals can arrive in between syscalls so in order to tell the kernel what to do in such a situation we have this
   if (signal_no == SIGALRM) {
 #ifdef SA_INTERRUPT
-    new_signal_to_install.sa_flags != SA_INTERRUPT;
+    new_signal_to_install.sa_flags |= SA_INTERRUPT;
 #endif
   } else {
 #ifdef SA_RESTART // SA_RESTART is a optional flag, if a system call is interrupted by this signal it will be automatically restarted by the kernel
-    new_signal_to_install.sa_flags != SA_RESTART;
+    new_signal_to_install.sa_flags |= SA_RESTART;
 #endif
   }
   if (sigaction(signal_no, &new_signal_to_install, &old_signal) < 0) { // sigaction() returns 0 on successful completion, -1 on

@@ -104,6 +104,7 @@ int main(int argc, char **argv) {
     childPid = fork();
     if (childPid == 0) {
       close(listen_fd); // after the parent creates a child process it inherits all the open descriptors which include the listen_fd as well but it has got no use for it hence it closes it
+      printf("ChildPid: %d\n", (int)getpid());
       str_echo(connection_fd);
       exit(0);
     }
