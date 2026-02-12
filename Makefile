@@ -1,47 +1,31 @@
-# deifine variables
-# general syntax for variable definition - NAME = value
-# general syntax for variable use - $(NAME)
-# define compiler first
-cc = gcc
-# define flags second
+CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -Iinclude
-# define a dir for objs
 OBJDIR = bin
-# define which files be compiled
-SRC = src/tcp_echo_server.c src/signal.c src/SIGCHLD_handler.c
-# for each .c make a .o   
-OBJ = $(SRC:src/%.c=$(OBJDIR)/%.o)
-# set a final target main executable
-TARGET = $(OBJDIR)/tcp_echo_server
 
-# define rules
-# general syntax for definition - 
-# target: dependencies
-# <TAB>command
-# now make will run the entire file and stuff like make clean will only run the defined rule
+SERVER_SRC = src/tcp_server.c src/signal.c src/SIGCHLD_handler.c src/str_add.c src/str_cli.c
+SERVER_OBJ = $(SERVER_SRC:src/%.c=$(OBJDIR)/%.o)
+SERVER_TARGET = $(OBJDIR)/tcp_server
 
-$(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
+CLIENT_SRC = src/client.c
+CLIENT_TARGET = $(OBJDIR)/client
 
-# create bin if it doesn't exists 
-$(OBJDIR): 
+all: $(SERVER_TARGET) $(CLIENT_TARGET)
+
+$(SERVER_TARGET): $(SERVER_OBJ)
+	$(CC) $(CFLAGS) $(SERVER_OBJ) -o $(SERVER_TARGET)
+
+$(CLIENT_TARGET): $(CLIENT_SRC)
+	$(CC) $(CFLAGS) $(CLIENT_SRC) -o $(CLIENT_TARGET)
+
+$(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-# ensure bin exists befoure compilation
-$(OBJ): | $(OBJDIR)
+$(SERVER_OBJ): | $(OBJDIR)
 
-all : $(TARGET)
-
-# define a clean rule
-clean : 
-	rm -rf $(OBJDIR)
-
-client :
-	g++ src/tcp_echo_client.c -o bin/tcp_echo_client
-
-# what is this ? 
-.PHONY: all clean
-
-# how to compile each source file into object files
 $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJDIR)
+
+.PHONY: all clean
